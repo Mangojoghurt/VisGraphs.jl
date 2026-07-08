@@ -394,7 +394,6 @@ end
 
 @testset "hvg/nvg — divide-and-conquer matches brute-force reference" begin
 
-    using Random
     rng = Random.MersenneTwister(42)
 
     signal_kinds = [
