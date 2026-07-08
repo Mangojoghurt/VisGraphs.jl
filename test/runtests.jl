@@ -1,6 +1,5 @@
 using VisGraphs
 using Test
-using SparseArrays
 using Random
 
 @testset "Signal generators" begin
