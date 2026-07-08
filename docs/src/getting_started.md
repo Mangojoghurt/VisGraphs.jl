@@ -124,6 +124,25 @@ degrees, dist = degree_distribution(edges_hvg, length(x))
 L = laplacian_matrix(edges_hvg, length(x))
 ```
 
+### Clustering Coefficient
+
+```@example main
+local_c, global_c = clustering_coefficient(edges_hvg, length(x))
+```
+
+### Average Path Length
+
+```@example main
+average_path_length(edges_hvg, length(x))
+```
+
+!!! note
+    `adjacency_matrix` and `laplacian_matrix` return **sparse** matrices
+    (`SparseMatrixCSC`), since visibility graphs typically have far fewer
+    edges than a fully dense graph would. All standard matrix operations
+    (indexing, `size`, `sum`, `==`, etc.) work exactly as they would on a
+    dense matrix.
+
 ---
 
 ## Comparing HVG and NVG
