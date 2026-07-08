@@ -4,9 +4,10 @@
 Generate a sine wave sampled at `n` evenly spaced points over the interval
 ``[0, 4π]``.
 
-The returned signal contains one complete sine wave with two periods and is
-primarily intended for testing, examples, and benchmarking algorithms that
-operate on time series.
+The returned signal spans two complete periods of the sine wave (each
+period is `2π`, and the sampling interval is `4π`), and is primarily
+intended for testing, examples, and benchmarking algorithms that operate
+on time series.
 
 # Examples
 ```jldoctest

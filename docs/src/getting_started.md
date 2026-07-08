@@ -78,7 +78,13 @@ plot_nvg(x)
 
 ## Weighted Visibility Graphs
 
-Weighted variants encode additional geometric information (e.g., distances or slopes) on each edge.
+Weighted variants attach one number to each edge: the angle, in radians,
+of the line connecting the two nodes, computed as
+`atan(x[j] - x[i], j - i)`. This combines the vertical difference in
+value and the horizontal distance in time/index into a single quantity
+bounded within `(-π/2, π/2)` — a steep, fast change between two points
+produces an angle with large magnitude, while a gradual, slow change
+produces an angle close to zero.
 
 ```@example main
 edges_whvg = whvg(x)
