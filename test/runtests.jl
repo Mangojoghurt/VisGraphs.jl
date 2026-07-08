@@ -1,5 +1,6 @@
 using VisGraphs
 using Test
+using Random
 
 @testset "Signal generators" begin
 
@@ -347,7 +348,65 @@ end
 
     @test_throws ArgumentError laplacian_matrix([], 0)
 end
-@testset "laplacian_matrix — input validation" begin
 
-    @test_throws ArgumentError laplacian_matrix([], 0)
+# ── Brute-force reference testing for the divide-and-conquer algorithms ────
+#
+# hvg()/nvg() use an O(n log n) divide-and-conquer implementation
+# (src/core/internal.jl). These tests verify that implementation against
+# a direct, unoptimized O(n^2)/O(n^3) reference that checks the visibility
+# condition literally as stated in each function's docstring, across many
+# random signals of different shapes.
+
+"""
+    _brute_hvg(x)
+
+Reference HVG implementation: checks the horizontal visibility condition
+`x[k] < min(x[i], x[j])` directly for every candidate pair `(i, j)`,
+with no divide-and-conquer optimization.
+"""
+function _brute_hvg(x::AbstractVector{<:Real})
+    n = length(x)
+    edges = Tuple{Int,Int}[]
+    for i in 1:n-1, j in i+1:n
+        visible = all(x[k] < min(x[i], x[j]) for k in i+1:j-1)
+        visible && push!(edges, (i, j))
+    end
+    return edges
+end
+
+"""
+    _brute_nvg(x)
+
+Reference NVG implementation: checks the natural visibility condition
+`x[k] < x[i] + (x[j] - x[i]) * (k - i) / (j - i)` directly for every
+candidate pair `(i, j)`, with no divide-and-conquer optimization.
+"""
+function _brute_nvg(x::AbstractVector{<:Real})
+    n = length(x)
+    edges = Tuple{Int,Int}[]
+    for i in 1:n-1, j in i+1:n
+        visible = all(x[k] < x[i] + (x[j] - x[i]) * (k - i) / (j - i) for k in i+1:j-1)
+        visible && push!(edges, (i, j))
+    end
+    return edges
+end
+
+@testset "hvg/nvg — divide-and-conquer matches brute-force reference" begin
+
+    rng = Random.MersenneTwister(42)
+
+    signal_kinds = [
+        n -> randn(rng, n),                                    # normal noise
+        n -> rand(rng, n) .* 10 .- 5,                          # uniform noise
+        n -> fill(3.14, n),                                    # constant
+        n -> sort(rand(rng, n)),                               # monotone increasing
+        n -> sort(rand(rng, n), rev=true),                     # monotone decreasing
+        n -> (v = zeros(n); v[n ÷ 2 + 1] = 100.0; v),          # single spike
+    ]
+
+    for kind in signal_kinds, n in [2, 3, 5, 10, 20, 35]
+        x = kind(n)
+        @test hvg(x) == _brute_hvg(x)
+        @test nvg(x) == _brute_nvg(x)
+    end
 end
