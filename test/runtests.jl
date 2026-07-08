@@ -463,6 +463,7 @@ end
     apl = average_path_length(edges, n)
     @test apl ≥ 1.0
     @test apl ≤ n - 1  # can't exceed the longest possible chain
+end
 # ── Brute-force reference testing for the divide-and-conquer algorithms ────
 #
 # hvg()/nvg() use an O(n log n) divide-and-conquer implementation
