@@ -29,6 +29,16 @@ end
     @test hvg_edges != nvg_edges
 end
 
+@testset "Large signal graph construction" begin
+    x = generate_random(10_000)
+
+    hvg_edges = hvg(x)
+    nvg_edges = nvg(x)
+
+    @test length(hvg_edges) > 0
+    @test length(nvg_edges) > 0
+end
+
 @testset "HVG/NVG small examples" begin
 
     x = [1.0, 2.0, 5.0]
@@ -525,3 +535,4 @@ end
         @test nvg(x) == _brute_nvg(x)
     end
 end
+
