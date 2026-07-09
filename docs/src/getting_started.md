@@ -17,7 +17,7 @@ If you haven’t installed **VisGraphs.jl** yet:
 
 ```julia
 using Pkg
-Pkg.add("VisGraphs")
+Pkg.add(url="https://github.com/Mangojoghurt/VisGraphs.jl")
 ```
 
 Then load the package:
