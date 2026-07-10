@@ -1,6 +1,3 @@
-using SparseArrays: sparse, issparse
-using LinearAlgebra: Diagonal
-
 """
     _degree_vector(edges, n::Integer)
 

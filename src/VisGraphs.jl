@@ -2,6 +2,9 @@ module VisGraphs
 
 using Plots: plot, plot!
 using Plots.Colors: RGB
+using Random: AbstractRNG, default_rng
+using SparseArrays: sparse, issparse
+using LinearAlgebra: Diagonal
 
 include("utils/validation.jl")
 include("core/internal.jl")
