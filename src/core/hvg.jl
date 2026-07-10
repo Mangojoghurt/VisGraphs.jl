@@ -18,8 +18,8 @@ Assumptions:
 For irregularly sampled data, users must resample or provide explicit
 timestamps (not currently supported).
 
-The implementation uses a divide-and-conquer algorithm with average
-O(N log N) complexity, based on the approach used in the Python package `ts2vg`.
+The implementation uses a divide-and-conquer algorithm with worst-case O(N^2)
+complexity, based on the approach used in the Python package `ts2vg`.
 
 Returns a sorted edge list `(i, j)` with `i < j`.
 """
@@ -85,10 +85,31 @@ Returns a `Plots.Plot` object.
 """
 function plot_hvg(x::AbstractVector{<:Real})
     edges = hvg(x)
-    plt = plot(1:length(x), x, lw=2, label="time series", xlabel="t", ylabel="x(t)", title="Horizontal Visibility Graph")
+
+    T = float(eltype(x))
+    xs = T[]
+    ys = T[]
+
     for (i, j) in edges
-        plot!(plt, [i, j], [x[i], x[j]]; color=:gray, alpha=0.5, label=false)
+        push!(xs, i, j, NaN)
+        push!(ys, x[i], x[j], NaN)
     end
+
+    plt = plot(xs, ys;
+        color=:gray,
+        alpha=0.6,
+        label=false,
+        xlabel="t",
+        ylabel="x(t)",
+        title="Horizontal Visibility Graph"
+    )
+
+    plot!(plt, 1:length(x), x;
+        lw=2,
+        label="time series",
+        color=:blue
+    )
+
     return plt
 end
 
@@ -111,13 +132,41 @@ Returns a `Plots.Plot` object.
 """
 function plot_whvg(x::AbstractVector{<:Real})
     edges = whvg(x)
-    weights = [w for (_, _, w) in edges]
+
+    T = float(eltype(x))
+
+    weights = T[w for (_, _, w) in edges]
     wmin, wmax = extrema(weights)
     wrange = wmax - wmin
-    plt = plot(1:length(x), x, lw=2, label="time series", xlabel="t", ylabel="x(t)", title="Weighted Horizontal Visibility Graph")
+
+    xs = T[]
+    ys = T[]
+    colors = RGB{T}[]
+
     for (i, j, w) in edges
-        c = wrange ≈ 0.0 ? 0.5 : (w - wmin) / wrange
-        plot!(plt, [i, j], [x[i], x[j]], color=RGB(c, 0.0, 1.0 - c), alpha=0.6, label=false)
+        c = wrange ≈ zero(T) ? T(0.5) : (w - wmin) / wrange
+
+        push!(xs, i, j, NaN)
+        push!(ys, x[i], x[j], NaN)
+
+        color = RGB{T}(c, zero(T), one(T) - c)
+        push!(colors, color, color, color)
     end
+
+    plt = plot(xs, ys;
+        color=colors,
+        alpha=0.6,
+        label=false,
+        xlabel="t",
+        ylabel="x(t)",
+        title="Weighted Horizontal Visibility Graph"
+    )
+
+    plot!(plt, 1:length(x), x;
+        lw=2,
+        label="time series",
+        color=:blue
+    )
+
     return plt
 end

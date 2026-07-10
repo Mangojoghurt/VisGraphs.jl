@@ -51,23 +51,29 @@ function _hvg_core!(
         mid = _argmax_range(x, l, r)
 
         # scan LEFT: connect mid to visible nodes in [l, mid-1]
-        max_seen = typemin(eltype(x))
-        @inbounds for i in mid-1:-1:l
-            xi = x[i]
-            if max_seen < xi
-                push!(edges, (i, mid))
+        @inbounds if mid > l
+            max_seen = x[mid - 1]
+            push!(edges, (mid - 1, mid))
+            for i in mid-2:-1:l
+                xi = x[i]
+                if xi > max_seen
+                    push!(edges, (i, mid))
+                    max_seen = xi
+                end
             end
-            max_seen = max(max_seen, xi) # update always, no early break
-        end
+        end        
 
         # scan RIGHT: connect mid to visible nodes in [mid+1, r]
-        max_seen = typemin(eltype(x))
-        @inbounds for j in mid+1:r
-            xj = x[j]
-            if max_seen < xj
-                push!(edges, (mid, j))
+        @inbounds if mid < r
+            max_seen = x[mid + 1]
+            push!(edges, (mid, mid + 1))
+            for j in mid+2:r
+                xj = x[j]
+                if xj > max_seen
+                    push!(edges, (mid, j))
+                    max_seen = xj
+                end
             end
-            max_seen = max(max_seen, xj) # update always, no early break
         end
 
         # recurse on independent sub-problems

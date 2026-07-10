@@ -32,8 +32,12 @@ using VisGraphs
 
 We start by generating a simple noisy oscillatory signal using the built-in utility function from **VisGraphs.jl**.
 
+To make the example reproducible, we use a seeded rng:
+
 ```@example main
-x = generate_noisy_sine(50, 0.1)
+using Random
+rng = MersenneTwister(42)
+x = generate_noisy_sine(50, 0.1; rng=rng)
 ```
 
 This produces a sine wave with additive Gaussian noise, which is useful for demonstrating visibility graph constructions on realistic, non-smooth signals.
@@ -142,19 +146,6 @@ average_path_length(edges_hvg, length(x))
     edges than a fully dense graph would. All standard matrix operations
     (indexing, `size`, `sum`, `==`, etc.) work exactly as they would on a
     dense matrix.
-
----
-
-## Comparing HVG and NVG
-
-It is often useful to compare the structural differences between HVG and NVG representations.
-
-```@example main
-plot_hvg(x)
-```
-```@example main
-plot_nvg(x)
-```
 
 ---
 
