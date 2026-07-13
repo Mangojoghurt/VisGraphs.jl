@@ -99,7 +99,7 @@ function plot_nvg(x::AbstractVector{<:Real})
         label=false,
         xlabel="t",
         ylabel="x(t)",
-        title="Horizontal Visibility Graph"
+        title="Natural Visibility Graph"
     )
 
     plot!(plt, 1:length(x), x;
@@ -156,7 +156,7 @@ function plot_wnvg(x::AbstractVector{<:Real})
         label=false,
         xlabel="t",
         ylabel="x(t)",
-        title="Weighted Horizontal Visibility Graph"
+        title="Weighted Natural Visibility Graph"
     )
 
     plot!(plt, 1:length(x), x;
