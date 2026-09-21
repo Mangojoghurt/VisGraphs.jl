@@ -5,3 +5,4 @@ VisGraphs = "c61117fa-d726-4646-af37-6046d989f4f7"
 
 [compat]
 Documenter = "1.17.0"
+Random = "< 0.0.1, 1"
